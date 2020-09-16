@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>Research3_win</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class="aui-pull-left aui-btn" tapmode onclick="returnResearch();">
+            <span class="aui-iconfont aui-icon-left"></span>返回
+        </a>
+        <div class="aui-title">普通话考试</div>
+    </header>
+    <div class="aui-card-list">
+        <div class="aui-card-list-header">
+            考试详情:
+        </div>
+        <div class="aui-card-list-content-padded">
+            1.普通话水平测试（PSC：PUTONGHUA SHUIPING CESHI）是对应试人运用普通话的规范程度、熟练程度的口语考试。考试形式为口试。(详情见官网http://www.cltt.org/)<br> 2.考试内容
+            <br>第一部分<br>读单音节字词100个(要求每个音节的音韵音调必须饱满，读错一个节扣0.1分)<br> 第二部分
+            <br>读双音节字词50个(要求读出音变，考生如有声调，声韵，轻声，化，变调等错误，每个音节扣0.2分)<br> 第三部分
+            <br>朗读短文(语音错误每个音节扣0.1分，漏字、添字、回读每个音节扣0.1分)<br> 第四部分
+            <br>命题自由说话(测试时当场抽签，每张题签上有两个话题，应试者从中任选一题单向说话3分钟)<br> 3.国家普通话等级划分
+            <br>一级(一级甲等、一级乙等)
+            <br>话剧、电影、电视剧、广播剧等表演、配音演员，播音、主持专业和影视表演专业的教师、学生，普通话水平不低于一级。普通话语音教师不低于一级
+            <br>二级(二级甲等、二级乙等)
+            <br>报考中小学、幼儿园教师资格的人员（包含各教育单位在职教师），普通话水平不低于二级；其中语文教师、对外汉语教师不低于二级甲等；师范类专业及各级职业学校的与口语表达密切相关专业的学生，普通话水平不低于二级；公共服务行业的特定岗位人员（如广播员、解说员、话务员等），普通话水平不低于二级甲等
+            <br>三级(三级甲等、三级乙等)
+            <br>国家公务员，普通话水平不低于三级甲等;高等学校的教师，普通话水平不低于三级甲等
+
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+    };
+
+    function returnResearch() {
+        api.closeWin({
+            name: 'Research3_win'
+        });
+    };
+</script>
+
+</html>

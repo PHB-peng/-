@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #content {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        #top {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        label {
+            color: #808080;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            font-size: 12px;
+            color: #808080;
+        }
+        
+        #center {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        #input {
+            display: inline-block;
+            width: 60%;
+        }
+        
+        #number {
+            width: 150px;
+            line-height: 40px;
+            margin: 10px 10px 10px 30px;
+            border: 2px solid #808080;
+            border-radius: 10px;
+            font-size: 24px;
+            text-align: center;
+            outline: none;
+        }
+        
+        #button {
+            display: inline-block;
+            width: 110px;
+            height: 44px;
+            background-color: #ff0000;
+            text-align: center;
+            line-height: 44px;
+            font-size: 24px;
+            border-radius: 10px;
+            color: #ffffff;
+        }
+        
+        #check {
+            text-align: center;
+            margin: 20px auto;
+            width: 260px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            color: #ffffff;
+            background-color: #03a9f4;
+            border-radius: 10px;
+        }
+        
+        #bottom {
+            width: 100%;
+            background-color: #f8f8f8;
+        }
+        
+        #warn {
+            margin: 20px 10px 20px 10px;
+            font-size: 16px;
+            color: #ff0000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <div id="top">
+            <label>请输入数字，手动完成签到</label>
+            <p>(数字由教师获取并告知)</p>
+        </div>
+        <div id="center">
+            <div id="input">
+                <input type="text" id="number">
+            </div>
+            <div id="button" tapmode onclick="postrecord();">
+                签到
+            </div>
+            <div id="check" tapmode onclick="fnopenrecord_win();">
+                查看我的考勤记录
+            </div>
+        </div>
+        <div id="bottom">
+            <nav id="warn">
+                注1)请在老师公布签到码2分钟内，将数字输入签到成功
+            </nav>
+            <nav id="warn">
+                注2)如果你出勤了但是签到失败，下课后可以找任课老师补签
+            </nav>
+            <nav id="warn">
+                注3)签到过程中请不要断开网络
+            </nav>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#808080',
+            textColor: '#ffffff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+
+    };
+
+
+
+    function postrecord() {
+        var Name = api.pageParam.Name;
+        var teacherId = api.pageParam.teacherId;
+        var number = $api.byId('number').value;
+        var Id = $api.getStorage('userinfo');
+        if (number == null || number.length == 0) {
+            alert('请输入签到码!')
+        } else {
+            api.ajax({
+                url: $api.getStorage('url') + '/Record/insertRecord',
+                method: 'post',
+                timeout: 30,
+                dataType: 'json',
+                returnAll: false,
+                data: {
+                    values: {
+                        sign: number,
+                        teacherid: teacherId,
+                        studentid: Id,
+                        coursename: Name
+                    }
+                },
+            }, function(ret, err) {
+                if (ret.content == 1) {
+                    api.alert({
+                        msg: ("签到成功！")
+                    });
+                } else {
+                    api.alert({
+                        msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                    });
+                };
+            });
+        }
+        // alert(number + teacherId + number + Name)
+
+    }
+
+    function fnopenrecord_win() {
+        var Name = api.pageParam.Name;
+        var teacherId = api.pageParam.teacherId;
+        api.openWin({
+            name: 'record_win',
+            url: './record_win.html',
+            bounces: false,
+            pageParam: {
+                teacherid: teacherId,
+                name: Name
+            }
+        });
+    }
+</script>
+
+</html>

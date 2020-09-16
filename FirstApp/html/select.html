@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+
+      <style>
+          body{
+                padding: 0;
+                margin: 0;
+                background-image:url("../image/uiu.gif");
+          }
+          body button[name="button1"]{
+             display: block;
+             height: 320px;
+            width: 100%;
+                font-size: 25px;
+           }
+        body   button[name="button2"]{
+             display: block;
+             height: 320px;
+             width: 100%;
+             font-size: 25px;
+           }
+      </style>
+  </head>
+  <body>
+
+        <button type="button" onClick="buttonT();" name="button1">教师端</button>
+        <button type="button" onClick="buttonS();" name="button2">学生端</button>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript">
+              function buttonT(){
+      api.openWin({
+          name: 'Tmian',
+          url: 'Tmain.html',
+          pageParam: {
+              name: 'test'
+          }
+      });
+              }
+              function buttonS(){
+                api.openWin({
+                    name: 'Smain',
+                    url: 'Smain.html',
+                    pageParam: {
+                        name: 'test'
+                    }
+                });
+              }
+      apiready = function(){
+
+      };
+  </script>
+  </html>

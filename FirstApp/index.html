@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/aui.css" />
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #header {
+            width: 100%;
+            height: 45px;
+            text-align: center;
+            background-color: #03a9f4;
+            box-sizing: content-box;
+        }
+        
+        .l1 {
+            height: 30px;
+            margin: 7.5px 0;
+            color: #fff;
+            line-height: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <label class="l1">主页</label>
+    </header>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-bar-tab-item" tapmode onclick="fnsetfootermenuindex(0);">
+            <i class="aui-iconfont aui-icon-home"></i>
+            <div class="aui-bar-tab-label">首页</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="fnsetfootermenuindex(1);">
+            <i class="aui-iconfont aui-icon-cert"></i>
+            <div class="aui-bar-tab-label">考证</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="fnsetfootermenuindex(2);">
+            <i class="aui-iconfont aui-icon-comment"></i>
+            <div class="aui-bar-tab-label">论坛</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="fnsetfootermenuindex(3);">
+            <i class="aui-iconfont aui-icon-my"></i>
+            <div class="aui-bar-tab-label">我的</div>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.parseTapmode();
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+
+        if ($api.getStorage('userinfo')) {} else {
+            api.openWin({
+                name: 'login',
+                url: 'widget://html/login.html',
+                bounces: false,
+                reload: true,
+            })
+        }
+
+        api.openFrameGroup({
+            name: 'index_framegroup',
+            scrollEnabled: true,
+            rect: {
+                x: 0,
+                y: $api.offset(header).h,
+                w: 'auto',
+                h: api.winHeight - $api.offset(header).h - $api.offset($api.dom('footer')).h
+            },
+            index: 0,
+            frames: [{
+                name: 'main',
+                url: './html/main.html'
+            }, {
+                name: 'function_frame',
+                url: './html/Research_frame.html'
+            }, {
+                name: 'forum_frame',
+                url: './html/forum_frame.html'
+            }, {
+                name: 'personal_frame',
+                url: './html/personal_frame.html'
+            }]
+        }, function(ret, err) {
+            fnsetfootermenuSelected(ret.index);
+        });
+
+    }
+
+    var menus = $api.domAll(footer, '.aui-bar-tab-item');
+
+    function fnsetfootermenuSelected(index_) {
+        for (var i = 0; i < menus.length; i++)
+            if (index_ == i) {
+                $api.addCls(menus[i], 'aui-active');
+            } else {
+                $api.removeCls(menus[i], 'aui-active');
+            }
+    }
+
+    function fnsetfootermenuindex(index_) {
+        var ret = ["主页", "考证", "论坛", "我的", ];
+        if (index_ == 0) {
+            $api.byId('header').innerHTML = "<label class=" + "' l1 '" + ">" + ret[0] + "</label>";
+        } else if (index_ == 1) {
+            $api.byId('header').innerHTML = "<label class=" + "' l1 '" + ">" + ret[1] + "</label>";
+        } else if (index_ == 2) {
+            $api.byId('header').innerHTML = "<label class=" + "' l1 '" + "'" + ">" + ret[2] + "</label>";
+        } else if (index_ == 3) {
+            $api.byId('header').innerHTML = "<label class=" + "' l1 '" + "'" + ">" + ret[3] + "</label>";
+        }
+        fnsetfootermenuSelected(index_);
+        api.setFrameGroupIndex({
+            name: 'index_framegroup',
+            index: index_,
+            scroll: true
+        });
+
+    }
+</script>
+
+</html>

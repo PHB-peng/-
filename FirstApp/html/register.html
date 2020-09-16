@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>t</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        body {
+            background-color: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #img {
+            width: 100px;
+            height: 100px;
+            margin: 10px auto;
+        }
+        
+        #img {
+            height: 100px;
+            width: 100px;
+        }
+        
+        #information {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        li {
+            margin: 10px;
+            height: 30px;
+            line-height: 30px;
+            border-bottom: 1px solid #C0C0C0;
+        }
+        
+        label {
+            float: left;
+            font-size: 18px;
+            height: 30px;
+            line-height: 30px;
+        }
+        
+        #college,
+        #class,
+        #name,
+        #id,
+        #password {
+            display: block;
+            width: 200px;
+            float: left;
+            outline: none;
+            height: 30px;
+            line-height: 30px;
+            margin: 0 10px;
+            font-size: 18px;
+        }
+        
+        #sale {
+            display: block;
+            float: left;
+            outline: none;
+            height: 30px;
+            line-height: 30px;
+            margin: 0 10px;
+            font-size: 18px;
+        }
+        
+        #footer {
+            width: 100%;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        #footer button {
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #0099FF;
+            color: #fff;
+            margin: 0 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tampode onclick="closeregister();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">欢迎注册</div>
+    </header>
+    <div id="img"><img src="../icon/newuser.png"></div>
+    <div id="information">
+        <ul>
+            <li><label>学院:</label><input type="text" id="college" placeholder="输入学院"></li>
+            <li><label>班级:</label><input type="text" id="class" placeholder="输入班级(如通信173)"></li>
+            <li><label>姓名:</label><input type="text" id="name" placeholder="输入姓名"></li>
+            <li><label>学号:</label><input type="text" id="id" placeholder="输入学号"></li>
+            <li><label>性别:</label><input type="radio" id="sale" name="sale" value="男"><label>男</label><input type="radio" id="sale" name="sale" value="女"><label>女</label></li>
+            <li><label>密码:</label><input type="password" id="password" placeholder="输入密码"></li>
+        </ul>
+    </div>
+    <div id="footer">
+        <button id="button1" tampode onclick="register();">注册</button>
+        <button id="button2" tampode onclick="closeregister();">取消</button>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+    }
+
+    function register() {
+        var sale1;
+        var isAutoSend = document.getElementsByName('sale');
+        for (var i = 0; i < isAutoSend.length; i++) {
+            if (isAutoSend[i].checked == true) {
+                // alert(isAutoSend[i].value);
+                sale1 = isAutoSend[i].value;
+            }
+        };
+        // alert(sale1)
+        var collegeName1 = $api.byId('college').value;
+        var studentName1 = $api.byId('name').value;
+        var className1 = $api.byId('class').value;
+        var studentId1 = $api.byId('id').value;
+        var password1 = $api.byId('password').value;
+        if (collegeName1 == null || collegeName1.length == 0) {
+            alert('请输入学院!')
+        } else if (className1 == null || className1.length == 0) {
+            alert('请输入班级!')
+        } else if (studentName1 == null || studentName1.length == 0) {
+            alert('请输入姓名!')
+        } else if (studentId1 == null || studentId1.length == 0) {
+            alert('请输入学号!')
+        } else if (sale1 == null) {
+            alert('请选择性别!')
+        } else if (password1 == null || password1.length == 0) {
+            alert('请输入密码!')
+        } else {
+            api.ajax({
+                url: $api.getStorage('url') + '/Student/insertStudent',
+                method: 'post',
+                timeout: 30,
+                dataType: 'json',
+                returnAll: false,
+                data: {
+                    values: {
+                        institue: collegeName1,
+                        name: studentName1,
+                        sex: sale1,
+                        clas: className1,
+                        id: studentId1,
+                        password: password1
+                    }
+                },
+            }, function(ret, err) {
+                if (ret.content == 1) {
+                    // TODO 
+                    api.alert({
+                        title: 'title',
+                        msg: '注册成功'
+                    });
+                    api.closeWin({
+                        name: 'register'
+                    });
+                } else {
+                    api.alert({
+                        // msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                        msg: ('网络不给力!')
+                    });
+                };
+            });
+        }
+    }
+
+    function closeregister() {
+        api.closeWin({
+            name: 'register'
+        });
+    }
+</script>
+
+</html>

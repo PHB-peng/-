@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tapmode onclick="closeattendance_win();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">考勤签到</div>
+    </header>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        // alert(api.pageParam.teacherId + api.pageParam.Name)
+
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        api.openFrame({
+            name: 'attendance_frame',
+            url: './attendance_frame.html',
+            bounces: true,
+            pageParam: {
+                teacherId: api.pageParam.teacherId,
+                Name: api.pageParam.Name
+            },
+            rect: {
+                x: 0,
+                y: $api.offset(header).h,
+                w: 'auto',
+                h: 'auto'
+            }
+        });
+
+    };
+
+    function closeattendance_win() {
+        api.closeWin({
+            name: 'attendance_win'
+        });
+    }
+</script>
+
+</html>

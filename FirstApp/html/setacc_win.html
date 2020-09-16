@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tapmode onclick="closesetacc_win();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">设置中心</div>
+    </header>
+    <div class="aui-content aui-margin-b-15">
+        <ul class="aui-list aui-list-in">
+            <li class="aui-list-item" tampode onclick="mod();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">修改密码</div>
+                </div>
+            </li>
+            <li class="aui-list-item" tampode onclick="emp();">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-title">清空缓存</div>
+                    <div class="aui-list-item-right" id="cacheSize"></div>
+                </div>
+            </li>
+            <li class="aui-list-item" tampode onclick="update();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">检查更新</div>
+
+                </div>
+            </li>
+            <li class="aui-list-item" tampode onclick="instroduct()">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">功能介绍</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <p>
+        <div class="aui-btn aui-btn-danger aui-btn-block aui-btn-sm" tapmode onclick="out();">退出登录</div>
+    </p>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+
+        //获取缓存大小
+        // size: //缓存大小，单位为Byte，数字类型。（-1：无存储设备、-2：正在准备USB存储设备、-3：无法访问存储设备）
+        api.getCacheSize(function(ret, err) {
+            var size = parseInt(ret.size / 1024) + 'KB';
+            var cacheSize = $api.byId('cacheSize');
+            cacheSize.innerHTML = size;
+        });
+    }
+
+    function closesetacc_win() {
+        api.closeWin({
+            name: 'setacc_win'
+        });
+    }
+
+    function emp() {
+        api.clearCache(function() {
+            api.toast({
+                msg: '清除完成'
+            });
+        });
+
+        //获取缓存大小
+        // size: //缓存大小，单位为Byte，数字类型。（-1：无存储设备、-2：正在准备USB存储设备、-3：无法访问存储设备）
+        api.getCacheSize(function(ret, err) {
+            var size = parseInt(ret.size / 1024) + 'KB';
+            var cacheSize = $api.byId('cacheSize');
+            cacheSize.innerHTML = size;
+        });
+    }
+
+    function update() {
+        api.alert({
+            title: '暂无更新!',
+            msg: '请及时关注官网消息!'
+        });
+    }
+
+    function mod() {
+        api.openWin({
+            name: 'updatePW',
+            url: './updatePW.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    };
+
+    function instroduct() {
+        api.openWin({
+            name: 'instroduct_win',
+            url: './instroduct_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+
+    function out() {
+        api.confirm({
+            title: '退出登录',
+            msg: '确定退出登录么？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            if (ret) {
+                if (1 == ret.buttonIndex) {
+
+                    $api.clearStorage();
+
+                    api.rebootApp();
+
+                    // api.openWin({
+                    //     name: 'login',
+                    //     url: 'widget://html/login.html',
+                    //     bounces: false,
+                    //     reload: true
+                    // });
+                }
+
+            }
+        });
+
+    }
+</script>
+
+</html>

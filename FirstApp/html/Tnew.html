@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+
+
+    <style>
+        .Tnew select {
+            position: absolute;
+            left: 150px;
+            top: 50px;
+        }
+
+        .Tnew input[name="Tjobnum"] {
+            position: absolute;
+            left: 150px;
+            top: 150px;
+        }
+        .Tnew input[name="Taccont1"] {
+            position: absolute;
+            left: 150px;
+            top: 175px;
+        }
+        .Tnew input[name="Taccont2"] {
+            position: absolute;
+            left: 150px;
+            top: 200px;
+        }
+        .Tnew input[name="Tname"] {
+            position: absolute;
+            left: 150px;
+            top: 225px;
+        }
+
+        .Tnew input[name="Ttij"] {
+            position: absolute;
+            border-radius: 7px;
+            left: 165px;
+            top: 300px;
+            height: 40px;
+            width: 70px;
+            border: 2px solid #ECEDCD;
+            background-color: #FFF;
+        }
+        .Tnew .leftTa{
+          position: absolute;
+          left: 60px;
+          top: 150px;
+        }
+        .Tnew .leftTo{
+          position: absolute;
+          left: 18px;
+          top: 175px;
+        }
+        .Tnew .leftTt{
+          position: absolute;
+          left: 18px;
+          top: 200px;
+        }
+        .Tnew .leftTn{
+          position: absolute;
+          left: 60px;
+          top: 225px;
+          height: 20px;
+          width: 50px;
+          border: 2px solid ;
+          background-color: #FFF;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="Tnew">
+        <select id="Tinstitue">
+              <option value ="1564">信息工程学院</option>
+              <option value ="1566">食品工程学院</option>
+              <option value="1568">人工智能学院</option>
+              <option value="1567">机械工程学院</option>
+      </select>
+
+
+
+
+      <p class="leftTa">工号：</p>           <input type="text" name="Tjobnum" id="Tjod" placeholder="请输入工号">
+      <p class="leftTo">第一次输入密码：</p>  <input type="text" name="Taccont1" id="Tacc1" placeholder="请设置密码">
+      <p class="leftTt">第二次输入密码：</p>  <input type="text" name="Taccont2" id="Tacc2" placeholder="请校验密码">
+      <p class="leftTn">姓名：</p>           <input type="text" name="Tname" id="Tnam" placeholder="请输入姓名">
+
+        <input type="text" name="Tjobnum" id="Tjod" placeholder="请输入工号">
+        <input type="text" name="Tname" id="Tnam" placeholder="请输入姓名">
+
+        <input type="button" name="Ttij" value="提交" onclick="Tijiao();">
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var obj = document.getElementById("Tjod");
+    var Tname = document.getElementById("Tnam");
+    var Taccont1 =document.getElementById("Tacc1").value;
+    var Taccont2 =document.getElementById("Tacc2").value;
+    var reg = new RegExp("^[0-9]*$");
+    //从document对象中，获取select标签
+    var a = document.getElementById("Tinstitue");
+    //select标签获取的值其实是一个数组--a.options[]; 然后，选定项的下标是--a.selectedIndex
+    var b = a.options[a.selectedIndex].value;
+
+
+    obj.onblur = function() {
+        //  console.log(reg.test(obj.value));
+        if (!reg.test(obj.value)) {
+            alert("请输入数字")
+        }
+    }
+    function Tijiao() {
+        if (obj.value == '' || Tname.value == '' || Taccont2 =='' || Taccont1 =='') {
+            alert("请输入完整");
+        } else {
+            console.log(b, obj.value, Tname.value);
+
+
+            apiready = function() {
+              console.log(2)
+                api.ajax({
+                        url: 'http://192.168.1.114:8080/tower/insertUser',
+                        method: 'post',
+                        data: {
+
+                            "id": 6
+                        }
+                    },
+                    function(ret, err) {
+                        if (ret) {
+                            alert(JSON.stringify(ret));
+                        } else {
+                            alert(JSON.stringify(err));
+                        }
+                    });
+
+            }
+        }
+    };
+</script>
+</html>

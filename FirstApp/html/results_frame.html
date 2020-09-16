@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+        
+        #result {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        #result nav {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-blox-orient: horizontal;
+            -webkit-flex-flow: row;
+            flex-flow: row;
+            height: 40px;
+        }
+        
+        nav div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            color: #000000;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="result">
+        <nav>
+            <div>姓名</div>
+            <div>课程</div>
+            <div>分数</div>
+        </nav>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#ccc',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            //从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+        var Id = $api.getStorage('userinfo');
+
+        // api.ajax({
+        //     url: 'url',
+        //     method: 'get',
+        //     timeout: 30,
+        //     dataType: 'json',
+        //     returnAll: false,
+        //     data: {
+        //         values: {
+        //             id: Id
+        //         }
+        //     }
+        // }, function(ret, err) {
+        //     if (ret) {
+        //         for (var i = 0; i < ret.length; i++) {
+        //             $api.byId('result').innerHTML += "<nav><div>" + ret[i].name + "</div><div>" + ret[i].coursename + "</div><div>" + ret[i].number + "</div></nav>"
+        //         }
+        //     } else {
+        //         api.alert({
+        //             msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+        //         });
+        //     };
+        // });
+
+    };
+</script>
+
+</html>

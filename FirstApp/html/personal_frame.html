@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0
+        }
+        
+        #content {
+            width: 100%;
+            height: 80px;
+            background-color: #fff;
+        }
+        
+        #img {
+            float: left;
+            margin: 10px;
+            width: 60px;
+            height: 60px;
+        }
+        
+        #img img {
+            width: 60px;
+            height: 60px;
+        }
+        
+        #detail {
+            float: left;
+            width: 180px;
+            height: 80px;
+        }
+        
+        #detail p {
+            margin: 8px;
+            line-height: 16px;
+            color: #000000;
+        }
+        
+        #work {
+            width: 100%;
+            margin: 6px 0;
+            background-color: #fff;
+        }
+        
+        #work-icon {
+            position: relative;
+            z-index: 20;
+            top: 0;
+            left: 24px;
+            height: 1.4rem;
+            line-height: 1.4rem;
+            width: 28px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <div id="img">
+            <img src="../icon/user.png">
+        </div>
+        <div id="detail">
+            <!-- <p id="name">hdm</p>
+            <p>学号:20171544656565</p>
+            <p>班级:通信173</p> -->
+        </div>
+    </div>
+    <div id="work">
+        <section class="aui-grid">
+            <div class="aui-row">
+                <div class="aui-col-xs-3" tapmode onclick="fnopenclassstudent_win();">
+                    <img id="work-icon" src="../icon/classstudengt.png">
+                    <div class="aui-grid-label">班级学生</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopencourse_win();">
+                    <img id="work-icon" src="../icon/attendance.png">
+                    <div class="aui-grid-label">考勤</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenresources_win();">
+                    <img id="work-icon" src="../icon/resources.png">
+                    <div class="aui-grid-label">课程资源</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenresults_win();">
+                    <img id="work-icon" src="../icon/results.png">
+                    <div class="aui-grid-label">成绩册</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenquestionnaire_win();">
+                    <img id="work-icon" src="../icon/questionnaire.png">
+                    <div class="aui-grid-label">调查问卷</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenvote_win();">
+                    <img id="work-icon" src="../icon/vote.png">
+                    <div class="aui-grid-label">投票</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenactivity_win();">
+                    <img id="work-icon" src="../icon/activity.png">
+                    <div class="aui-grid-label">活动</div>
+                </div>
+                <div class="aui-col-xs-3" tapmode onclick="fnopenevaluation_win();">
+                    <img id="work-icon" src="../icon/evaluation.png">
+                    <div class="aui-grid-label">教学评估</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="aui-content aui-margin-b-15">
+        <ul class="aui-list aui-list-in">
+            <li class="aui-list-item aui-list-item-middle" tapmode onclick="openblog()">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">我的发布</div>
+                </div>
+            </li>
+            <li class="aui-list-item aui-list-item-middle" tapmode onclick="opencollect()">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">我的收藏</div>
+                </div>
+            </li>
+            <li class="aui-list-item" tapmode onclick="openreturn()">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">反馈客服</div>
+                </div>
+            </li>
+            <li class="aui-list-item" tampode onclick="set();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">设置中心</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // var name = "hdm";
+        // $api.setStorage('username', name);
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#808080',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            //从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+
+        api.ajax({
+            url: $api.getStorage('url') + '/Student/findStudentById',
+            method: 'post',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false,
+            data: {
+                values: {
+                    id: $api.getStorage('userinfo')
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                // TODO 
+                $api.byId('detail').innerHTML = "<p>" + ret.name + "</p><p>学号:" + ret.id + "</p><p>班级:" + ret.clas + "</p>"
+                $api.setStorage('username', ret.name);
+            } else {
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            };
+        });
+
+    }
+
+    function openblog() {
+        api.openWin({
+            name: 'myblog',
+            url: './myblog.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function opencollect() {
+        api.openWin({
+            name: 'mycollect',
+            url: './mycollect.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function openreturn() {
+        api.openWin({
+            name: 'myreturn',
+            url: './myreturn.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function set() {
+        api.openWin({
+            name: 'setacc_win',
+            url: './setacc_win.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+    }
+
+    function fnopenclassstudent_win() {
+        api.openWin({
+            name: 'classstudent_win',
+            url: './classstudent_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopencourse_win() {
+        api.openWin({
+            name: 'course_win',
+            url: './course_win.html',
+            bounces: false,
+            pageParam: {
+
+            }
+        });
+    }
+
+    function fnopenresources_win() {
+        api.openWin({
+            name: 'resources_win',
+            url: './resources_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopenresults_win() {
+        api.openWin({
+            name: 'results_win',
+            url: './results_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopenquestionnaire_win() {
+        api.openWin({
+            name: 'questionnaire_win',
+            url: './questionnaire_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopenvote_win() {
+        api.openWin({
+            name: 'vote_win',
+            url: './vote_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopenactivity_win() {
+        api.openWin({
+            name: 'activity_win',
+            url: './activity_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+
+    function fnopenevaluation_win() {
+        api.openWin({
+            name: 'evaluation_win',
+            url: './evaluation_win.html',
+            bounces: false,
+            pageParam: {
+                key: 'value'
+            }
+        });
+    }
+</script>
+
+</html>

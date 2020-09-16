@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #content {
+            width: 100%;
+            background-color: #f8f8f8;
+        }
+        
+        #content div {
+            width: 100%;
+            margin-bottom: 2px;
+            background-color: #fff;
+        }
+        
+        #content nav {
+            font-size: 18px;
+            color: #000000;
+            line-height: 30px;
+            margin: 0 10px;
+        }
+        
+        #content p {
+            font-size: 16px;
+            color: #000000;
+            line-height: 30px;
+            margin: 0 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tapmode onclick="closemyblog();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">我的发布</div>
+    </header>
+    <div id="content"></div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+
+        var id = $api.getStorage('userinfo');
+        var result;
+        api.ajax({
+            url: $api.getStorage('url') + '/Essay/findEssayByAuthor',
+            method: 'post',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false,
+            data: {
+                values: {
+                    authorid: id
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                // TODO 
+                for (var i = 0; i < ret.length; i++) {
+                    $api.byId("content").innerHTML += "<div tampode onclick='go(" + i + ");'><nav>" + ret[i].title + "</nav><p>" + ret[i].content + "</p><p>" + ret[i].author + "&nbsp;&nbsp" + ret[i].date + "</p></div>"
+                }
+            } else {
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            };
+            window.result = ret;
+            return result;
+        });
+    };
+
+    function closemyblog() {
+        api.closeWin({
+            name: 'myblog'
+        });
+
+    }
+
+    function go(i) {
+        api.openWin({
+            name: 'blog0_win',
+            url: './blog0_win.html',
+            bounces: false,
+            pageParam: {
+                title: result[i].title,
+                content: result[i].content,
+                date: result[i].date,
+                author: result[i].author,
+                essayid: result[i].id,
+                // file:result[i].file
+            }
+        });
+
+    }
+</script>
+
+</html>

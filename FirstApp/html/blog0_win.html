@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #collect {
+            width: 30px;
+            height: 30px;
+            margin: 10px;
+            float: right;
+        }
+        
+        #share {
+            width: 30px;
+            height: 30px;
+            margin: 10px;
+            float: right;
+        }
+        
+        header img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class="aui-pull-left aui-btn" tapmode onclick="closeblog0_win();">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div id="share" tapmode onclick="returnshare();">
+            <img src="../icon/share.png">
+        </div>
+        <div id="collect" tapmode onclick="returncollect();">
+            <img src="../icon/collect.png">
+        </div>
+    </header>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+
+        var inputField = api.require('inputField');
+        inputField.open({
+            bgColor: '#fff',
+            lineColor: '#f8f8f8',
+            fileBgColor: '#fff',
+            borderColor: '#808080',
+            placeholder: '想对Ta说点什么...',
+            sendBtn: {
+                bg: '#0099FF', //字符串类型；发送按钮常态背景色
+                title: '发送', //字符串类型；发送按钮的标题
+                titleSize: 12, //数字类型；发送按钮的标题字体大小
+                titleColor: '#fff', //字符串类型；发送按钮标题文字颜色
+                corner: 5, //数字类型；发送按钮圆角大小
+                sendW: 40, //数字类型；发送按钮的宽
+                sendH: 35, //数字类型；发送按钮的高
+                marginRight: 10, //数字类型；发送按钮距离屏幕右边的距离，本参数暂仅支持iOS平台；默认：10
+            },
+        }, function(ret, err) {
+            if (ret != null || ret.length != 0) {
+                var met = ret.msg;
+                api.ajax({
+                    url: $api.getStorage('url') + '/Discuss/insertDiscuss',
+                    method: 'post',
+                    timeout: 30,
+                    dataType: 'json',
+                    returnAll: false,
+                    data: {
+                        values: {
+                            essayid: essayid1,
+                            content: met,
+                            discussid: $api.getStorage('userinfo'),
+                            discusser: $api.getStorage('username'),
+                        }
+                    }
+                }, function(ret, err) {
+                    if (ret.content == 1) {
+                        // TODO 
+                        alert('评论成功!')
+                    } else {
+                        api.alert({
+                            msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode + met)
+                        });
+                    };
+                });
+            } else {
+                api.alert({
+                    msg: '请输入内容!'
+                });
+            }
+        });
+
+        var title1 = api.pageParam.title;
+        var content1 = api.pageParam.content;
+        var date1 = api.pageParam.date;
+        // var file1 = api.pageParam.file;
+        var author1 = api.pageParam.author;
+        var essayid1 = api.pageParam.essayid;
+
+        api.openFrame({
+            name: 'blog0_frame',
+            url: './blog0_frame.html',
+            bounces: true,
+            pageParam: {
+                title: title1,
+                content: content1,
+                date: date1,
+                // file: file1,
+                author: author1,
+                essayid: essayid1
+            },
+            rect: {
+                x: 0,
+                y: $api.offset($api.dom('header')).h,
+                w: 'auto',
+                h: api.winHeight - 2 * $api.offset($api.dom('header')).h
+            }
+        });
+
+    };
+
+    function closeblog0_win() {
+        api.closeWin({
+            name: 'blog0_win'
+        });
+    }
+
+    function returnshare() {
+        alert('正在酝酿中!')
+    }
+
+    function returncollect() {
+        var essayid1 = api.pageParam.essayid;
+        api.ajax({
+            url: 'http://192.168.1.110:8080/Collect/addCollect',
+            method: 'post',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false,
+            data: {
+                values: {
+                    essayid: essayid1,
+                    collectorid: $api.getStorage('userinfo')
+                }
+            }
+        }, function(ret, err) {
+            if (ret.content) {
+                // TODO 
+                api.toast({
+                    msg: '收藏成功!',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            };
+        });
+    }
+</script>
+
+</html>

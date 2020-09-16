@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Research</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #content {
+            width: 100%;
+            position: relative;
+            left: 0;
+            top: 200px;
+        }
+        
+        #content-ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        li {
+            margin-top: 10px;
+            background-color: #fff;
+        }
+        
+        p {
+            font-size: 18px;
+            margin-left: 5px;
+            color: #000000;
+        }
+        
+        li div {
+            font-size: 12x;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aui-searchbar" id="search">
+        <div class="aui-searchbar-input aui-border-radius">
+            <i class="aui-iconfont aui-icon-search"></i>
+            <form action="">
+                <input type="search" placeholder="请输入搜索内容" id="search-input">
+            </form>
+        </div>
+        <div class="aui-searchbar-cancel" tapmod>取消</div>
+    </div>
+    <div id="content">
+        <ul id="content-ul"></ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        api.parseTapmode();
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#808080',
+            textColor: '#ffffff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+
+
+        var UIScrollPicture = api.require("UIScrollPicture");
+        UIScrollPicture.open({
+            rect: {
+                x: 0,
+                y: 44,
+                w: api.winWidth,
+                h: 200
+            },
+            data: {
+                paths: [
+                    'widget://image/1.png',
+                    'widget://image/2.png',
+                    'widget://image/3.png',
+                    'widget://image/4.png'
+                ],
+            },
+            styles: {
+                caption: {
+                    height: 35,
+                    color: '#E0FFFF',
+                    size: 13,
+                    bgColor: '#696969',
+                    position: 'bottom'
+                },
+                indicator: {
+                    align: 'center',
+                    color: '#FFFFFF',
+                    activeColor: '#FF0000'
+                }
+            },
+            placeholderImg: 'widget://image/1.jpg',
+            contentMode: 'scaleToFill',
+            interval: 3,
+            fixedOn: api.frameName,
+            loop: true,
+            fixed: false
+        });
+
+        var result;
+        api.ajax({
+            url: $api.getStorage('url') + '/Message/getMessage',
+            method: 'get',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false
+        }, function(ret, err) {
+            if (ret) {
+                // TODO 
+                for (i = 0; i < ret.length; i++) {
+                    $api.byId('content-ul').innerHTML = "<li tapmode  onclick='detail(" + i + ");'><p>" + ret[i].title + "</p><div>" + ret[i].content + "</div></li>"
+                }
+            } else {
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            };
+            window.result = ret;
+            return result;
+        });
+
+    }
+
+    var searchBar = document.querySelector(".aui-searchbar-input");
+    if (searchBar) {
+        searchBar.onclick = function() {
+            document.querySelector(".aui-searchbar-cancel").style.marginRight = 0;
+        }
+    }
+    document.querySelector(".aui-searchbar-cancel").onclick = function() {
+        this.style.marginRight = "-" + this.offsetWidth + "px";
+        document.getElementById("search-input").value = '';
+        document.getElementById("search-input").blur();
+    }
+
+    var oForm = document.getElementsByTagName("form")[0];
+    oForm.onsubmit = function() {
+        //alert(document.getElementById("search-input").value)
+        var search = $api.byId('search-input').value;
+
+        if (search == null || search.length == 0) {
+            alert('请输入内容!')
+        } else {
+            // 过滤   
+            var newresult = result.filter(array => array.title.match(search));
+
+            if (newresult == null || newresult.length == 0) {
+                alert('没有搜索到相关内容!')
+            } else {
+                api.openWin({
+                    name: 'Research_result',
+                    url: './Research_result.html',
+                    bounces: false,
+                    pageParam: {
+                        result1: newresult
+                    }
+                });
+            }
+        }
+    };
+
+    function detail(it) {
+        api.openWin({
+            name: 'research_detail',
+            url: './research_detail.html',
+            bounces: false,
+            pageParam: {
+                detail: result[it]
+            }
+        });
+    }
+</script>
+
+</html>

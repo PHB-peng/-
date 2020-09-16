@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0
+        }
+        
+        body {
+            background-color: #f8f8f8;
+        }
+        
+        #blog {
+            width: 100%;
+            background: #fff;
+        }
+        
+        #blog nav {
+            margin: 10px;
+            color: #000000;
+            font-size: 20px;
+            line-height: 30px;
+        }
+        
+        #blog pre {
+            margin: 10px;
+            color: #000000;
+            font-size: 20px;
+            line-height: 30px;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        #blog p {
+            margin-left: 10px;
+            color: #000000;
+            font-size: 16px;
+            line-height: 20px;
+        }
+        
+        #reply {
+            background-color: #fff;
+        }
+        
+        #return {
+            border-bottom: 2px solid #f8f8f8;
+        }
+        
+        #return pre {
+            margin: 10px;
+            color: #000000;
+            font-size: 18px;
+            line-height: 30px;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="blog"></div>
+    <div id="reply"></div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.js"></script>
+<script type="text/x-dot-template" id="useType0">
+    {{~it:value:index}}
+    <div id="return">
+        <pre>{{=value.discusser}}说:{{=value.content}}</pre>
+    </div>
+    {{~}}
+</script>
+<script type="text/javascript">
+    apiready = function() {
+        var id1 = api.pageParam.essayid;
+        var title1 = api.pageParam.title;
+        var content1 = api.pageParam.content;
+        var date1 = api.pageParam.date;
+        // api.pageParam.file;
+        var author1 = api.pageParam.author;
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#808080',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            //从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+
+
+        $api.byId('blog').innerHTML = "<nav>" + title1 + "</nav><pre>" + content1 + "</pre><p>" + '作者:' + author1 + "&nbsp;&nbsp;" + '发布时间:' + date1 + "</p>";
+
+
+        api.ajax({
+                url: $api.getStorage('url') + '/Discuss/findDiscuss',
+                method: 'post',
+                timeout: 30,
+                dataType: 'json',
+                returnAll: false,
+                data: {
+                    values: {
+                        essayid: id1,
+                    }
+                }
+            },
+            function(ret, err) {
+                if (ret) {
+                    // TODO 
+                    tmpltxt = doT.template(document.getElementById("useType0").innerHTML); //生成模板方法
+                    document.getElementById("reply").innerHTML = tmpltxt(ret); //数据渲染
+                } else {
+                    api.alert({
+                        msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                    });
+                };
+            }
+        );
+    };
+</script>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0
+        }
+        
+        #content {
+            width: 100%;
+            background-color: #f8f8f8;
+        }
+        
+        #content div {
+            width: 100%;
+            margin-bottom: 2px;
+            background-color: #fff;
+        }
+        
+        #content nav {
+            font-size: 18px;
+            color: #000000;
+            line-height: 30px;
+            margin: 0 10px;
+        }
+        
+        #content p {
+            font-size: 16px;
+            color: #000000;
+            line-height: 30px;
+            margin: 0 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tapmode onclick="closegetreturn_win();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">搜索结果</div>
+    </header>
+    <div id="content"></div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.parseTapmode();
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+
+        var result = api.pageParam.result1;
+
+        for (var i = 0; i < result.length; i++) {
+            $api.byId("content").innerHTML += "<div tampode onclick='go(" + i + ");'><nav>" + result[i].title + "</nav><p>" + result[i].content + "</p><p>" + result[i].author + "&nbsp;&nbsp" + result[i].date + "</p></div>"
+        }
+
+    };
+
+    function closegetreturn_win() {
+        api.closeWin({
+            name: 'getreturn_win'
+        });
+    }
+
+    function go(i) {
+        var result = api.pageParam.result1;
+        api.openWin({
+            name: 'blog0_win',
+            url: './blog0_win.html',
+            bounces: false,
+            pageParam: {
+                title: result[i].title,
+                content: result[i].content,
+                date: result[i].date,
+                author: result[i].author,
+                essayid: result[i].id,
+                // file:result[i].file
+            }
+        });
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+        
+        #course {
+            width: 100%;
+        }
+        
+        #content {
+            border-bottom: 2px solid #C0C0C0;
+            height: 100px;
+        }
+        
+        #img {
+            float: left;
+            margin: 20px 10px 20px 20px;
+            width: 60px;
+            height: 60px;
+        }
+        
+        #img img {
+            width: 60px;
+            height: 60px;
+        }
+        
+        #detail {
+            float: left;
+            width: 180px;
+            height: 80px;
+            margin: 10px;
+        }
+        
+        #detail p {
+            margin: 5px;
+            line-height: 20px;
+            line-height: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="course">
+        <!-- <div id="content" onclick="fnopenattendance_win(123456 );">
+            <div id="img">
+                <img src="../icon/user.png">
+            </div>
+            <div id="detail">
+                <p>汪老师</p>
+                <p>课程:汽车文化</p>
+                <p>课程:1593788956545</p>
+            </div>
+        </div> -->
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<!-- 模板存放区域 修改type类型，以免会被解析成js -->
+<script type="text/x-dot-template" id="useType0">
+    {{~it:value:index}}
+    <div id="content" tampode onclick="fnopenattendance_win('{{=value.teacherid}}','{{=value.name}}');">
+        <div id="img">
+            <img src="../icon/user.png">
+        </div>
+        <div id="detail">
+            <p>{{=value.teachername}}老师</p>
+            <p>课程:{{=value.name}}</p>
+            <p>联系方式:{{=value.phone}}</p>
+        </div>
+    </div>
+    {{~}}
+</script>
+<!-- 引入js文件 -->
+<script type="text/javascript" src="../script/doT.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#808080',
+            textColor: '#ffffff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true,
+        }, function(ret, err) {
+            window.location.reload();
+            api.toast({
+                msg: '已是最新内容',
+                duration: 1000,
+                location: 'bottom'
+            });
+            api.refreshHeaderLoadDone();
+        });
+
+        api.ajax({
+            url: $api.getStorage('url') + '/Course/findCourseByStudentId',
+            method: 'post',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false,
+            data: {
+                values: {
+                    id: $api.getStorage('userinfo')
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                // TODO
+                tmpltxt = doT.template(document.getElementById("useType0").innerHTML); //生成模板方法
+                document.getElementById("course").innerHTML = tmpltxt(ret); //数据渲染
+                // alert(ret)
+            } else {
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            };
+        });
+
+    };
+
+    function fnopenattendance_win(it, it1) {
+        var teacherID = it;
+        var NAME = it1;
+        api.openWin({
+            name: 'attendance_win',
+            url: './attendance_win.html',
+            bounces: false,
+            pageParam: {
+                teacherId: teacherID,
+                Name: NAME
+            }
+        });
+        // alert(it + it1)
+    }
+</script>
+
+</html>

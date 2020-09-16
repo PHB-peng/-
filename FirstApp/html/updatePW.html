@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="header">
+        <a class=" aui-pull-left aui-btn " tapmode onclick="closemodacc_win();">
+            <span class="aui-iconfont aui-icon-left "></span>
+        </a>
+        <div class="aui-title ">修改密码</div>
+    </header>
+    <div class="aui-content aui-margin-b-15 aui-list-item-font-12">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label aui-list-item-font-12">
+                        原密码
+                    </div>
+                    <div class="aui-list-item-input aui-list-item-font-12">
+                        <input id="originPw" class="aui-list-item-font-12" type="password" placeholder="原密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label aui-list-item-font-12">
+                        新密码
+                    </div>
+                    <div class="aui-list-item-input aui-list-item-font-12">
+                        <input id="passwd" class="aui-list-item-font-12" type="password" placeholder="新密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label aui-list-item-font-12">
+                        再次输入
+                    </div>
+                    <div class="aui-list-item-input aui-list-item-font-12">
+                        <input id="rePasswd" class="aui-list-item-font-12" type="password" placeholder="再次输入新密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                    <div class="aui-btn aui-btn-info aui-margin-r-5" tampode onclick="fnCommitUpdatePasswd()">确认修改</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+    }
+
+    function closemodacc_win() {
+        api.closeWin({
+            name: 'updatePW'
+        });
+    }
+
+    function fnCommitUpdatePasswd() {
+        var originPw = $api.byId('originPw');
+        var passwd = $api.byId('passwd');
+        var rePasswd = $api.byId('rePasswd');
+
+
+
+        var originPwValue = originPw.value;
+        var passwdValue = passwd.value;
+        var rePasswdValue = rePasswd.value;
+
+        if (originPwValue == null || originPwValue.length == 0) {
+            alert('请输入原密码');
+            return;
+        }
+
+        if (passwdValue == null || passwdValue.length == 0) {
+            alert('请输入新密码');
+            return;
+        }
+
+
+        if (rePasswdValue == null || rePasswdValue.length == 0) {
+            alert('请再次输入新密码');
+            return;
+        }
+
+        if (passwdValue != rePasswdValue) {
+            alert('密码输入不一致，请重新输入');
+            return;
+        }
+
+        if (passwdValue.length < 6 || rePasswdValue.length < 6) {
+            alert('请输入6位以上字符的新密码');
+            return;
+        }
+
+        var Id = $api.getStorage('userinfo');
+
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '密码修改中...',
+            text: '请稍候...',
+            modal: false
+        });
+
+        api.ajax({
+            url: $api.getStorage('url') + '/Student/updateStudent',
+            method: 'post',
+            timeout: 30,
+            dataType: 'json',
+            returnAll: false,
+            timeout: 10,
+            data: {
+                values: {
+                    id: Id,
+                    oldpassword: originPwValue,
+                    password: passwdValue
+                }
+            }
+        }, function(ret, err) {
+            if (ret.content == 1) {
+                api.hideProgress();
+                api.toast({
+                    msg: '密码修改成功，请使用新密码登录',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+
+                api.confirm({
+                    title: '密码修改成功!',
+                    msg: '请使用新密码登录',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        $api.clearStorage();
+                        api.rebootApp();
+                    }
+                });
+                // api.alert({
+                //     title: '密码修改成功',
+                //     msg: '请使用新密码登录',
+                // }, function(ret, err) {
+
+                //     $api.clearStorage('userinfo');
+                //     api.rebootApp();
+
+                // });
+            } else {
+                api.toast({
+                    msg: '网络异常，修改失败',
+                    duration: 2000,
+                    location: 'middle'
+                });
+                api.alert({
+                    msg: ('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+                });
+            }
+        });
+    }
+</script>
+
+</html>
